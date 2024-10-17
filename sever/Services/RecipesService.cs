@@ -18,14 +18,24 @@ public class RecipesService
     return recipe;
   }
 
-  // internal Recipe getRecipeById(int recipeId)
-  // {
-
-  // }
+  internal Recipe getRecipeById(int recipeId)
+  {
+    Recipe recipe = _repository.getRecipeById(recipeId);
+    if (recipe == null)
+    {
+      throw new Exception("No recipe with that ID");
+    }
+    return recipe;
+  }
 
   internal List<Recipe> getRecipes()
   {
     List<Recipe> recipes = _repository.getRecipes();
     return recipes;
+  }
+
+  internal Recipe updateRecipe(Recipe recipeData, string id)
+  {
+    throw new NotImplementedException();
   }
 }

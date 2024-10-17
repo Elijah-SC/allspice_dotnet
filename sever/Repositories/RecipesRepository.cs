@@ -1,5 +1,6 @@
 
 
+
 namespace allspice_dotnet.Repositories;
 
 public class RecipesRepository
@@ -26,6 +27,20 @@ public class RecipesRepository
     WHERE recipes.id = LAST_INSERT_ID();";
 
     Recipe recipe = _db.Query<Recipe, Profile, Recipe>(sql, JoinCreatorToRecipe, recipeData).FirstOrDefault();
+    return recipe;
+  }
+
+  internal Recipe getRecipeById(int recipeId)
+  {
+    string sql = @"
+  SELECT
+   recipes.*,
+   accounts.*
+   FROM recipes
+   JOIN accounts on recipes.creatorId = accounts.id
+   Where recipes.id = @recipeId;";
+
+    Recipe recipe = _db.Query<Recipe, Profile, Recipe>(sql, JoinCreatorToRecipe, new { recipeId }).FirstOrDefault();
     return recipe;
   }
 

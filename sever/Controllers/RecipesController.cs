@@ -33,10 +33,18 @@ public class RecipesController : ControllerBase
     List<Recipe> recipes = _recipesService.getRecipes();
     return Ok(recipes);
   }
-  //   [HttpGet("{recipeId}")]
-  //   public ActionResult<Recipe> getRecipeById(int recipeId)
-  //   {
-  //     Recipe recipe = _recipesService.getRecipeById(recipeId);
-  //     return recipe;
-  //   }
+  [HttpGet("{recipeId}")]
+  public ActionResult<Recipe> getRecipeById(int recipeId)
+  {
+    Recipe recipe = _recipesService.getRecipeById(recipeId);
+    return recipe;
+  }
+
+  [HttpPut("{recipeId}"), Authorize]
+  public async Task<ActionResult<Recipe>> UpdateRecipe([FromBody] Recipe recipeData, int recipeId)
+  {
+    Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+    Recipe recipe = _recipesService.updateRecipe(recipeData, userInfo.Id);
+    return recipe;
+  }
 }
