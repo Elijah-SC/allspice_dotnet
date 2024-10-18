@@ -1,6 +1,8 @@
 
 
 
+using System.Security.Cryptography;
+
 namespace allspice_dotnet.Services;
 
 public class RecipesService
@@ -18,6 +20,17 @@ public class RecipesService
     return recipe;
   }
 
+  internal string deleteRecipe(int recipeId, string userId)
+  {
+    Recipe recipeToDelete = getRecipeById(recipeId);
+    if (recipeToDelete.CreatorId != userId)
+    {
+      throw new Exception("That ain't your Recipe to Delete, You Slimy Postman USER, or I wrote my front end poorly in that case I apologize");
+    }
+    _repository.deleteRecipe(recipeId);
+    return "Recipe Deleted";
+  }
+
   internal Recipe getRecipeById(int recipeId)
   {
     Recipe recipe = _repository.getRecipeById(recipeId);
@@ -28,14 +41,28 @@ public class RecipesService
     return recipe;
   }
 
+
   internal List<Recipe> getRecipes()
   {
     List<Recipe> recipes = _repository.getRecipes();
     return recipes;
   }
 
-  internal Recipe updateRecipe(Recipe recipeData, string id)
+  internal Recipe updateRecipe(Recipe recipeData, string UserId, int recipeId)
   {
-    throw new NotImplementedException();
+    Recipe Recipe = getRecipeById(recipeId);
+    if (Recipe.CreatorId != UserId)
+    {
+      throw new Exception("Thats not your Recipe to Update, Lil Bro");
+    }
+
+    Recipe.Title = recipeData.Title ?? Recipe.Title;
+    Recipe.SubTitle = recipeData.SubTitle ?? Recipe.SubTitle;
+    Recipe.Instructions = recipeData.Instructions ?? Recipe.Instructions;
+    Recipe.Img = recipeData.Img ?? Recipe.Img;
+    Recipe.Category = recipeData.Category ?? Recipe.Category;
+
+    _repository.updateRecipe(Recipe);
+    return Recipe;
   }
 }

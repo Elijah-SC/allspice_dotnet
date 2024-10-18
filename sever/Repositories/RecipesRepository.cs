@@ -1,6 +1,10 @@
 
 
 
+
+using System.Diagnostics;
+using System.Security.Cryptography;
+
 namespace allspice_dotnet.Repositories;
 
 public class RecipesRepository
@@ -30,6 +34,22 @@ public class RecipesRepository
     return recipe;
   }
 
+  internal void deleteRecipe(int recipeId)
+  {
+    string sql = @"DELETE FROM recipes WHERE id = @recipeId LIMIT 1;";
+
+    int rowsAffected = _db.Execute(sql, new { recipeId });
+
+    switch (rowsAffected)
+    {
+      case 0:
+        throw new Exception("No Recipes were Deleted, FAILED");
+      case 1:
+        break;
+      default:
+        throw new Exception($"{rowsAffected} were deleted, THATS NOT GOOD");
+    }
+  }
   internal Recipe getRecipeById(int recipeId)
   {
     string sql = @"
@@ -54,6 +74,32 @@ public class RecipesRepository
     JOIN accounts ON recipes.creatorId = accounts.id;";
     List<Recipe> recipes = _db.Query<Recipe, Profile, Recipe>(sql, JoinCreatorToRecipe).ToList();
     return recipes;
+  }
+
+  internal void updateRecipe(Recipe recipe)
+  {
+    string sql = @"
+    Update recipes 
+    SET 
+    title = @Title,
+    subtitle = @Subtitle,
+    instructions = @Instructions,
+    img = @Img,
+    category = @category
+    WHERE id = @Id
+    LIMIT 1;";
+
+    int rowsAffected = _db.Execute(sql, recipe);
+
+    switch (rowsAffected)
+    {
+      case 0:
+        throw new Exception("No Recipes were Updated, FAILED");
+      case 1:
+        break;
+      default:
+        throw new Exception($"{rowsAffected} were deleted, THATS NOT GOOD");
+    }
   }
 
   private Recipe JoinCreatorToRecipe(Recipe recipe, Profile profile)

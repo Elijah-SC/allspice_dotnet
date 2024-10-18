@@ -1,3 +1,5 @@
+using System.Net.Http;
+
 namespace allspice_dotnet.Controllers;
 
 [ApiController, Route("api/[controller]")]
@@ -30,21 +32,59 @@ public class RecipesController : ControllerBase
   [HttpGet]
   public ActionResult<List<Recipe>> getRecipes()
   {
-    List<Recipe> recipes = _recipesService.getRecipes();
-    return Ok(recipes);
+    try
+    {
+      List<Recipe> recipes = _recipesService.getRecipes();
+      return Ok(recipes);
+
+    }
+    catch (Exception exception)
+    {
+      return BadRequest(exception.Message);
+    }
   }
   [HttpGet("{recipeId}")]
   public ActionResult<Recipe> getRecipeById(int recipeId)
   {
-    Recipe recipe = _recipesService.getRecipeById(recipeId);
-    return recipe;
+    try
+    {
+      Recipe recipe = _recipesService.getRecipeById(recipeId);
+      return recipe;
+    }
+    catch (Exception exception)
+    {
+      return BadRequest(exception.Message);
+    }
   }
 
   [HttpPut("{recipeId}"), Authorize]
   public async Task<ActionResult<Recipe>> UpdateRecipe([FromBody] Recipe recipeData, int recipeId)
   {
-    Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
-    Recipe recipe = _recipesService.updateRecipe(recipeData, userInfo.Id);
-    return recipe;
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      Recipe recipe = _recipesService.updateRecipe(recipeData, userInfo.Id, recipeId);
+      return recipe;
+    }
+    catch (Exception exception)
+    {
+      return BadRequest(exception.Message);
+    }
+  }
+
+  [HttpDelete("{recipeId}"), Authorize]
+  public async Task<ActionResult<string>> deleteRecipe(int recipeId)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      string Message = _recipesService.deleteRecipe(recipeId, userInfo.Id);
+      return Message;
+
+    }
+    catch (Exception exception)
+    {
+      return BadRequest(exception.Message);
+    }
   }
 }
