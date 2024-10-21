@@ -15,13 +15,17 @@ CREATE TABLE IF NOT EXISTS recipes (
     subtitle TINYTEXT,
     instructions VARCHAR(5000) NOT NULL,
     img VARCHAR(1000) NOT NULL,
-    category ENUM(
-        'breakfast',
-        'lunch',
-        'dinner',
-        'snack',
-        'dessert'
-    ) NOT NULL,
+    category ENUM('breakfast','lunch','dinner','snack','dessert') NOT NULL,
     creatorId VARCHAR(255) NOT NULL,
     Foreign Key (creatorId) REFERENCES accounts (id) ON DELETE CASCADE
+)
+
+Create Table IF Not Exists ingredients (
+id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+name VARCHAR(255) NOT NULL,
+quantity VARCHAR(255) NOT NULL,
+recipeId INT NOT NULL,
+Foreign Key (recipeId) REFERENCES recipes (id) on DELETE CASCADE
 )
