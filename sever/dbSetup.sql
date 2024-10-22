@@ -29,3 +29,21 @@ quantity VARCHAR(255) NOT NULL,
 recipeId INT NOT NULL,
 Foreign Key (recipeId) REFERENCES recipes (id) on DELETE CASCADE
 )
+
+create Table IF NOT EXISTS favorites (
+id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+recipeId int NOT NULL,
+accountId VARCHAR(255) NOT NULL,
+Foreign Key (recipeId) REFERENCES recipes (id) ON DELETE CASCADE,
+Foreign Key (accountId) REFERENCES accounts (id) ON DELETE CASCADE,
+UNIQUE (accountId, recipeId)
+)
+
+
+INSERT INTO 
+      favorites(recipeId, accountId) 
+      values(1, '66f32093b4e1c932f63ed63a');
+      
+Drop Table favorites

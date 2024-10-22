@@ -51,7 +51,7 @@ public class RecipesController : ControllerBase
     try
     {
       Recipe recipe = _recipesService.getRecipeById(recipeId);
-      return recipe;
+      return Ok(recipe);
     }
     catch (Exception exception)
     {
@@ -66,7 +66,7 @@ public class RecipesController : ControllerBase
     {
       Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
       Recipe recipe = _recipesService.updateRecipe(recipeData, userInfo.Id, recipeId);
-      return recipe;
+      return Ok(recipe);
     }
     catch (Exception exception)
     {
@@ -81,7 +81,7 @@ public class RecipesController : ControllerBase
     {
       Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
       string Message = _recipesService.deleteRecipe(recipeId, userInfo.Id);
-      return Message;
+      return Ok(Message);
 
     }
     catch (Exception exception)
@@ -96,7 +96,7 @@ public class RecipesController : ControllerBase
     try
     {
       List<Ingredient> ingredients = _ingredientsService.getRecipeIngredients(recipeId);
-      return ingredients;
+      return Ok(ingredients);
     }
     catch (Exception exception)
     {
