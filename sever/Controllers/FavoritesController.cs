@@ -15,10 +15,31 @@ public class FavoritesController : ControllerBase
   [Authorize, HttpPost]
   public async Task<ActionResult<FavoriteRecipe>> createFavorite([FromBody] Favorite favoriteData)
   {
-    Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
-    favoriteData.AccountId = userInfo.Id;
-    FavoriteRecipe favorite = _favoritesService.createFavorite(favoriteData);
-    return Ok(favorite);
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      favoriteData.AccountId = userInfo.Id;
+      FavoriteRecipe favorite = _favoritesService.createFavorite(favoriteData);
+      return Ok(favorite);
+    }
+    catch (Exception exception)
+    {
+      return BadRequest(exception.Message);
+    }
+  }
+
+  [Authorize, HttpDelete("{favoriteId}")]
+  public async Task<ActionResult<string>> deleteFavorite(int favoriteId)
+  {
+    try
+    {
+      Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+      string Message = _favoritesService.deleteFavorite(favoriteId, userInfo.Id);
+      return Ok(Message);
+    }
+    catch (Exception exception)
+    {
+      return BadRequest(exception.Message);
+    }
   }
 }
-

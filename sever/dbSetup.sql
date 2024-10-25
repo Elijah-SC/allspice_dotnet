@@ -47,3 +47,7 @@ INSERT INTO
       values(1, '66f32093b4e1c932f63ed63a');
       
 Drop Table favorites
+
+DELETE FROM favorites WHERE id = 1;
+
+SELECT * FROM favorites WHERE id = 2;
